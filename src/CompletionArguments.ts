@@ -5,5 +5,4 @@ export type CompletionArguments = {
   currentCompletion: string;
   completions: ResultEntry[];
   position: Position;
-  limited: boolean;
 };

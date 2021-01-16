@@ -16,7 +16,7 @@ import {
   ANOTHER_OPTION_KEY, DIFFERENT_NOTIFICATION_ID, SAME_NOTIFICATION_ID, PROMO_TYPE
 } from "./utils/testData";
 import { setNotificationsResult } from "./utils/notification.utils";
-import { API_VERSION, BINARY_NOTIFICATION_POLLING_INTERVAL, MessageActions } from "../../consts";
+import { BINARY_NOTIFICATION_POLLING_INTERVAL, MessageActions } from "../../consts";
 import { SOME_MORE_TIME } from "./utils/helper";
 
 suite("Should poll notifications", () => {
@@ -31,7 +31,7 @@ suite("Should poll notifications", () => {
     await sleep(BINARY_NOTIFICATION_POLLING_INTERVAL + SOME_MORE_TIME);
     stdinMock.verify(
       (x) =>
-        x.write(`{"version":${API_VERSION},"request":{"Notifications":{}}}\n`, "utf8"),
+        x.write('{"version":"3.2.53","request":{"Notifications":{}}}\n', "utf8"),
       TypeMoq.Times.atLeastOnce()
     );
   });
@@ -56,8 +56,7 @@ suite("Should poll notifications", () => {
               key: ANOTHER_OPTION_KEY,
             },
           ],
-          notification_type:PROMO_TYPE,
-          state: null
+          notification_type:PROMO_TYPE
         },
       ],
     });
@@ -100,15 +99,13 @@ suite("Should poll notifications", () => {
               key: ANOTHER_OPTION_KEY,
             },
           ],
-          notification_type:PROMO_TYPE,
-          state: null
+          notification_type:PROMO_TYPE
         },
         {
           id: ANOTHER_NOTIFICATION_ID,
           message: ANOTHER_MESSAGE,
           options: [{ actions: [MessageActions.NONE], key: AN_OPTION_KEY }],
-          notification_type:PROMO_TYPE,
-          state: null
+          notification_type:PROMO_TYPE
         },
       ],
     });
@@ -118,7 +115,7 @@ suite("Should poll notifications", () => {
     stdinMock.verify(
       (x) =>
         x.write(
-          `{"version":${API_VERSION},"request":{"NotificationAction":{"id":"DIFFERENT_NOTIFICATION_ID","selected":"AN_OPTION_KEY","message":"A_MESSAGE","notification_type":"promo","actions":["None"],"state":null}}}\n`,
+          '{"version":"3.2.53","request":{"NotificationAction":{"id":"DIFFERENT_NOTIFICATION_ID","selected":"AN_OPTION_KEY","message":"A_MESSAGE","notification_type":"promo","actions":["None"]}}}\n',
           "utf8"
         ),
       TypeMoq.Times.once()
@@ -126,7 +123,7 @@ suite("Should poll notifications", () => {
     stdinMock.verify(
       (x) =>
         x.write(
-          `{"version":${API_VERSION},"request":{"NotificationAction":{"id":"ANOTHER_NOTIFICATION_ID","message":"ANOTHER_MESSAGE","notification_type":"promo","state":null}}}\n`,
+          '{"version":"3.2.53","request":{"NotificationAction":{"id":"ANOTHER_NOTIFICATION_ID","message":"ANOTHER_MESSAGE","notification_type":"promo"}}}\n',
           "utf8"
         ),
       TypeMoq.Times.once()
@@ -155,8 +152,7 @@ suite("Should poll notifications", () => {
                 key: ANOTHER_OPTION_KEY,
               },
             ],
-            notification_type:PROMO_TYPE,
-            state: null
+            notification_type:PROMO_TYPE
           },
         ],
       },
@@ -172,8 +168,7 @@ suite("Should poll notifications", () => {
                 key: ANOTHER_OPTION_KEY,
               },
             ],
-            notification_type:PROMO_TYPE,
-            state: null
+            notification_type:PROMO_TYPE
           },
         ],
       }
@@ -189,6 +184,5 @@ suite("Should poll notifications", () => {
       ),
       "Notification should show"
     );
-    showInformationMessage.restore();
   });
 });

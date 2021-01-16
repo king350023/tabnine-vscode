@@ -5,14 +5,11 @@ import { ServiceLevel } from "../binary/state";
 import { Capability, isCapabilityEnabled } from "../capabilities";
 import {
   FULL_BRAND_REPRESENTATION,
-  LIMITATION_SYMBOL,
   STATUS_BAR_FIRST_TIME_CLICKED,
 } from "../consts";
 
 export default class StatusBarData {
   private _serviceLevel?: ServiceLevel | undefined;
-
-  private _limited = false;
 
   private _icon?: string;
 
@@ -22,11 +19,6 @@ export default class StatusBarData {
     private _statusBarItem: StatusBarItem,
     private _context: ExtensionContext
   ) {}
-
-  public set limited(limited: boolean) {
-    this._limited = limited;
-    this.updateStatusBar();
-  }
 
   public set serviceLevel(serviceLevel: ServiceLevel | undefined) {
     this._serviceLevel = serviceLevel;
@@ -61,8 +53,8 @@ export default class StatusBarData {
       this._serviceLevel === "Pro" || this._serviceLevel === "Trial"
         ? " pro"
         : "";
-    const limited = this._limited ? ` ${LIMITATION_SYMBOL}` : "";
-    this._statusBarItem.text = `${FULL_BRAND_REPRESENTATION}${serviceLevel}${this.getIconText()}${issueText.trimEnd()}${limited}`;
+
+    this._statusBarItem.text = `${FULL_BRAND_REPRESENTATION}${serviceLevel}${this.getIconText()}${issueText.trimEnd()}`;
     this._statusBarItem.tooltip =
       isCapabilityEnabled(Capability.SHOW_AGRESSIVE_STATUS_BAR_UNTIL_CLICKED) &&
       !this._context.globalState.get(STATUS_BAR_FIRST_TIME_CLICKED)

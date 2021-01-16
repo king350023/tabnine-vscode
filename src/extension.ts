@@ -23,7 +23,7 @@ import {
   COMPLETION_IMPORTS,
   handleImports,
   HANDLE_IMPORTS,
-  getSelectionHandler,
+  selectionHandler,
 } from "./selectionHandler";
 import pollStatuses, { disposeStatus } from "./statusBar/pollStatusBar";
 import { registerStatusBar, setDefaultStatus } from "./statusBar/statusBar";
@@ -67,8 +67,13 @@ async function backgroundInit(context: vscode.ExtensionContext) {
     },
     ...COMPLETION_TRIGGERS
   );
-}
 
+  // if (isCapabilityEnabled(Capability.VALIDATOR_CAPABILITY)) {
+  //   setImmediate(() => {
+  //     initValidator(context, pasteDisposable);
+  //   });
+  // }
+}
 
 export async function deactivate(): Promise<unknown> {
   void closeValidator();
@@ -87,10 +92,9 @@ function handleSelection(context: vscode.ExtensionContext) {
     context.subscriptions.push(
       vscode.commands.registerTextEditorCommand(
         COMPLETION_IMPORTS,
-        getSelectionHandler(context)
+        selectionHandler
       ),
-      vscode.commands.registerTextEditorCommand(HANDLE_IMPORTS, handleImports));
+      vscode.commands.registerTextEditorCommand(HANDLE_IMPORTS, handleImports)
+    );
   }
 }
-
-

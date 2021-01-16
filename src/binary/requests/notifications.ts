@@ -10,7 +10,6 @@ export type Notification = {
     actions: MessageActions[];
   }[];
   notification_type: unknown;
-  state: unknown;
 };
 
 export type Notifications = {
@@ -28,10 +27,9 @@ export async function sendNotificationAction(
   message: string,
   selected: string | undefined,
   notification_type: unknown,
-  actions: MessageActions[] | undefined,
-  state: unknown,
+  actions: MessageActions[] | undefined
 ): Promise<NotificationAction | null | undefined> {
   return tabNineProcess.request<NotificationAction>({
-    NotificationAction: { id, selected, message, notification_type, actions, state},
+    NotificationAction: { id, selected, message, notification_type, actions},
   });
 }

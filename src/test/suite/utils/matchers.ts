@@ -1,5 +1,4 @@
 import * as path from "path";
-import { API_VERSION } from "../../../consts";
 import { AutocompleteRequest } from "./completion.utils";
 
 // Example autocomplete query:
@@ -11,7 +10,7 @@ export function matchesAutocompleteRequest(request: string): boolean {
 
   return (
     request.endsWith("\n") &&
-    completionRequest?.version === API_VERSION &&
+    completionRequest?.version === "3.2.53" &&
     completionRequest?.request?.Autocomplete?.filename?.endsWith(
       path.join("test", "fixture", "completion.txt")
     ) &&

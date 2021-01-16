@@ -11,12 +11,10 @@ import {
   BRAND_NAME,
   CHAR_LIMIT,
   DEFAULT_DETAIL,
-  LIMITATION_SYMBOL,
   MAX_NUM_RESULTS,
 } from "./consts";
 import { tabnineContext } from "./extensionContext";
 import { COMPLETION_IMPORTS } from "./selectionHandler";
-import { setCompletionStatus } from "./statusBar/statusBar";
 
 const INCOMPLETE = true;
 
@@ -52,13 +50,12 @@ async function completionsListFor(
       region_includes_end: document.offsetAt(afterEnd) !== afterEndOffset,
       max_num_results: getMaxResults(),
     });
-  
 
     if (!response || response?.results.length === 0) {
       return [];
     }
 
-    const limit = showFew(response, document, position) || response.is_locked
+    const limit = showFew(response, document, position)
       ? 1
       : response.results.length;
 
@@ -71,7 +68,6 @@ async function completionsListFor(
         oldPrefix: response?.old_prefix,
         entry,
         results: response?.results,
-        limited: response?.is_locked
       })
     );
   } catch (e) {
@@ -93,29 +89,16 @@ function makeCompletionItem(args: {
   oldPrefix: string;
   entry: ResultEntry;
   results: ResultEntry[];
-  limited: boolean;
 }): vscode.CompletionItem {
   const item = new vscode.CompletionItem(
     ATTRIBUTION_BRAND + args.entry.new_prefix
   );
-  if (args.limited){
-    item.detail = `${LIMITATION_SYMBOL} ${  BRAND_NAME}`;
-  } else {
-    item.detail = BRAND_NAME;
-  }
-  setCompletionStatus(args.limited);
 
+  item.detail = BRAND_NAME;
   item.sortText = String.fromCharCode(0) + String.fromCharCode(args.index);
   item.insertText = new vscode.SnippetString(
-      escapeTabStopSign(args.entry.new_prefix)
+    escapeTabStopSign(args.entry.new_prefix)
   );
-  if (args.limited){
-    item.insertText = new vscode.SnippetString(args.oldPrefix);
-  } else {
-    item.insertText = new vscode.SnippetString(
-      escapeTabStopSign(args.entry.new_prefix)
-  );
-  }
   item.filterText = args.entry.new_prefix;
   item.preselect = args.index === 0;
   item.kind = args.entry.kind;
@@ -131,15 +114,14 @@ function makeCompletionItem(args: {
           currentCompletion: args.entry.new_prefix,
           completions: args.results,
           position: args.position,
-          limited: args.limited
-        }
+        },
       ],
       command: COMPLETION_IMPORTS,
       title: "accept completion",
     };
   }
 
-  if (args.entry.new_suffix && !args.limited) {
+  if (args.entry.new_suffix) {
     item.insertText
       .appendTabstop(0)
       .appendText(escapeTabStopSign(args.entry.new_suffix));
